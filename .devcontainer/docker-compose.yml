@@ -12,7 +12,8 @@ services:
         VARIANT: "3.8"
         # Optional Node.js version to install
         NODE_VERSION: "none"
-
+    environment: 
+      DBT_PROFILES_DIR: /workspace/dbt
     volumes:
       - ..:/workspace:cached
     init: true
