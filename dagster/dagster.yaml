@@ -1,0 +1,38 @@
+event_log_storage:
+  module: dagster_postgres.event_log
+  class: PostgresEventLogStorage
+  config:
+    postgres_db: &db
+      username: dagsteruser
+      password: pssd
+      hostname: localhost
+      db_name: dagsterdb
+      port: 5432
+
+run_storage:
+  module: dagster_postgres.run_storage
+  class: PostgresRunStorage
+  config:
+    postgres_db:
+      <<:  *db
+
+schedule_storage:
+  module: dagster_postgres.schedule_storage
+  class: PostgresScheduleStorage
+  config:
+    postgres_db:
+      <<:  *db
+
+run_coordinator:
+  module: dagster.core.run_coordinator
+  class: QueuedRunCoordinator
+  config:
+    max_concurrent_runs: 10
+    tag_concurrency_limits:
+      - key: "use-case"
+        value:
+          applyLimitPerUniqueValue: true
+        limit: 1
+      - key: "dbt"
+        value: "periodic"
+        limit: 1

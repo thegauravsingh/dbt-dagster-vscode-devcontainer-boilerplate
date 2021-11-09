@@ -1,4 +1,4 @@
-## An Intro to scheduling dbt with Dagster.
+## An Intro to scheduling dbt with Dagster using vscode devcontainer.
 
 ### Slides and recording for the talk
 - [Slides](./Sydney%20dbt%20meetup%20-%20Benoit%20Perigaud%20-%20dbt%20and%20Dagster.pdf)
@@ -8,7 +8,7 @@
 install all packages from the requirements.txt
 
 ### Setup dbt
-- Setup your `profiles.yml` file with your database credentials. The dbt project name is `dbt_demo`.
+- Optional Setup your `profiles.yml` file with your database credentials. The dbt project name is `dbt_demo`.
 - Try your dbt connection by opening a shell in the `dbt_demo` folder and running `dbt debug`
 - Do a `dbt seed` in the same folder to make sure that the correct rights are setup to write to the DB
 

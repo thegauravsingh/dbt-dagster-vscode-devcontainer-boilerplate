@@ -1,0 +1,4 @@
+load_from:
+  - python_file:
+      relative_path: dbt_pipeline.py
+      executable_path: /home/pi/.envs/dbt/bin/python
