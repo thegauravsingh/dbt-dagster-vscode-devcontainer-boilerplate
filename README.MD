@@ -6,7 +6,7 @@
 
 ### Setup a docker environment for devcontainer
 - all packages are mentioned in requirements.txt, just open in vscode, do shift + P and then rebuild and reopen in container
-
+- in vscode devcontainer, execute dagster api grpc -h 0.0.0.0 -p 4000 -f /workspace/pipeline/dbt_pipeline.py --lazy-load-user-code 
 ### Setup dbt
 - Execute dbt_init.sql to setup db for dbt.
 - Optional Local Setup your `profiles.yml` file with your database credentials. The dbt project name is `dbt_demo`.
