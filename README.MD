@@ -1,6 +1,6 @@
 ## An Intro to scheduling dbt with Dagster using vscode devcontainer.
 
-### Slides and recording for the talk
+### Inspired from folloiwng Slides and recording for the talk
 - [Slides](./Sydney%20dbt%20meetup%20-%20Benoit%20Perigaud%20-%20dbt%20and%20Dagster.pdf)
 - [Youtube recording](https://www.youtube.com/watch?v=FkCEBFY_6ow)
 
