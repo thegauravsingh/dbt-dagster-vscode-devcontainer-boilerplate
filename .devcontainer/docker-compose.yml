@@ -14,15 +14,19 @@ services:
         NODE_VERSION: "none"
     environment: 
       DBT_PROFILES_DIR: /workspace/dbt
+      DAGSTER_POSTGRES_USER: "dagsteruser"
+      DAGSTER_POSTGRES_PASSWORD: "pssd"
+      DAGSTER_POSTGRES_DB: "dagsterdb"
     volumes:
       - ..:/workspace:cached
     init: true
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
-
+    #command:  bash -c "dagster api grpc -h 0.0.0.0 -p 4000 -f /workspace/pipeline/dbt_pipeline.py --lazy-load-user-code"
     # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
     network_mode: service:db
+
     # Uncomment the next line to use a non-root user for all processes.
     # user: vscode
 
@@ -38,8 +42,61 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
       POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"  
+      - "3000:3000"
+      - "4000:4000"  
     # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
+  # This service runs dagit, which loads your user code from the user code container.
+  # Since our instance uses the QueuedRunCoordinator, any runs submitted from dagit will be put on
+  # a queue and later dequeued and launched by dagster-daemon.
+  docker_dagit:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile_dagster
+    entrypoint:
+      - dagit
+      - -h
+      - "0.0.0.0"
+      - -p
+      - "3000"
+      - -w
+      - workspace.yaml
+    container_name: docker_dagit
+    #expose:
+    #  - "3000"
+    #ports:
+    #  - "3000:3000"
+    environment:
+      DAGSTER_POSTGRES_USER: "dagsteruser"
+      DAGSTER_POSTGRES_PASSWORD: "pssd"
+      DAGSTER_POSTGRES_DB: "dagsterdb"
+    volumes: # Make docker client accessible so we can terminate containers from dagit
+      - /var/run/docker.sock:/var/run/docker.sock
+    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+    network_mode: service:db
+
+  # This service runs the dagster-daemon process, which is responsible for taking runs
+  # off of the queue and launching them, as well as creating runs from schedules or sensors.
+  docker_daemon:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile_dagster
+    entrypoint:
+      - dagster-daemon
+      - run
+    container_name: docker_daemon
+    restart: on-failure
+    environment:
+      DAGSTER_POSTGRES_USER: "dagsteruser"
+      DAGSTER_POSTGRES_PASSWORD: "pssd"
+      DAGSTER_POSTGRES_DB: "dagsterdb"
+    volumes: # Make docker client accessible so we can launch containers using host docker
+      - /var/run/docker.sock:/var/run/docker.sock
+    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+    network_mode: service:db
 volumes:
   postgres-data: null
+ 

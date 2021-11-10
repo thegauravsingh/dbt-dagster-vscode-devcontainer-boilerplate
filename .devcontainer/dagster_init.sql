@@ -1,0 +1,4 @@
+CREATE DATABASE dagsterdb;
+CREATE USER dagsteruser WITH ENCRYPTED PASSWORD 'pssd';
+GRANT ALL PRIVILEGES ON DATABASE dagsterdb TO dagsteruser;
+ALTER DATABASE dagsterdb OWNER TO dagsteruser;
